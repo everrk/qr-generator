@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>QR Generator</title>
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    width: 100%;
+    height: 150px;
+    background-image: url('https://i.postimg.cc/SKsQM0zg/350-350.png');
+    background-repeat: no-repeat;
+    background-size: contain;      /* يحافظ على نسبة الصورة */
+    background-position: center;   /* تمركز الصورة في الأعلى */
+}
+
+
+.container {
+    margin-top: 20px;
+}
+
+input {
+    width: 300px;
+    padding: 5px;
+}
+
+button {
+    padding: 5px 10px;
+    margin-left: 5px;
+}
+
+#qrcode {
+    margin: 20px auto;
+    display: inline-block;
+}
+</style>
+</head>
+<body>
+
+<header></header>
+
+<div class="container">
+    <h2>Please insert the link here</h2>
+    <input id="urlInput" placeholder="ضع الرابط هنا">
+    <button onclick="generateQR()">Click Here</button>
+    <br><br>
+    <div id="qrcode"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+function generateQR() {
+    const url = document.getElementById("urlInput").value.trim();
+    const div = document.getElementById("qrcode");
+    div.innerHTML = "";
+    if(!url){ div.innerHTML = "الرجاء إدخال رابط!"; return; }
+
+    // توليد QR
+    new QRCode(div, { text: url, width: 200, height: 200 });
+
+    // زر تحميل QR
+    setTimeout(() => {
+        const canvas = div.querySelector("canvas");
+        let imgDataUrl = "";
+
+        if(canvas){
+            imgDataUrl = canvas.toDataURL("image/png");
+        } else {
+            const img = div.querySelector("img");
+            if(img) imgDataUrl = img.src;
+        }
+
+        if(imgDataUrl){
+            const link = document.createElement("a");
+            link.innerText = "تحميل QR";
+            link.href = imgDataUrl;
+            link.download = "QR_Code.png";
+            div.appendChild(document.createElement("br"));
+            div.appendChild(link);
+        }
+    }, 100);
+}
+</script>
+
+</body>
+</html>
